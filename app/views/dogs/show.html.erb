@@ -1,0 +1,79 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @dog.name %>
+</p>
+
+<p>
+  <strong>Gender:</strong>
+  <%= @dog.gender %>
+</p>
+
+<p>
+  <strong>Raza:</strong>
+  <%= @dog.raza %>
+</p>
+<p>
+  <strong>Calle:</strong>
+  <%= @dog.calle %>
+</p>
+<p>
+  <strong>Numero:</strong>
+  <%= @dog.numero %>
+</p>
+<p>
+  <strong>Colonia:</strong>
+  <%= @dog.colonia %>
+</p>
+<p>
+  <strong>Ciudad:</strong>
+  <%= @dog.ciudad %>
+</p>
+<p>
+  <strong>País:</strong>
+  <%= @dog.pais %>
+</p>
+<p>
+  <strong>Codigo Postal:</strong>
+  <%= @dog.codigoPostal %>
+</p>
+
+<p>
+  <strong>Date:</strong>
+  <%= @dog.date %>
+</p>
+
+
+<p>
+  <strong>Characteristics:</strong>
+  <%= @dog.characteristics %>
+</p>
+
+<p>
+  <strong>Collar:</strong>
+  <%= @dog.collar %>
+</p>
+
+<p>
+  <strong>Reward:</strong>
+  <%= @dog.reward %>
+</p>
+
+<p>
+  <strong>Photo:</strong>
+  <%= image_tag@dog.photo %>
+</p>
+<!--
+<p>
+  <strong>User found:</strong>
+  <%= @dog.user_found_id %>
+</p>
+
+<p>
+  <strong>User lost:</strong>
+  <%= @dog.user_lost_id %>
+</p>
+-->
+<%= link_to 'Edit', edit_dog_path(@dog) %> |
+<%= link_to 'Back', dogs_path %>
