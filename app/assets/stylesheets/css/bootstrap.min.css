@@ -7,14 +7,7 @@
 .oculto {
 	 display: none;
 }
-/*
-table {
-	border: dashed 1px;
-}
-td, th, tr {
-	border: dashed 1px;
-}
-*/
+
 .anuncio {
 	text-align: center;
 	font-size: 20px;

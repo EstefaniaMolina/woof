@@ -1,19 +1,28 @@
-class DogsController < ApplicationController
+class DogsController < ApplicationController   
+  before_action :authenticate_user!, :except => [:search]
   before_action :set_dog, only: [:show, :edit, :update, :destroy]
-  before_action :authenticate_user!
+
+ 
   # GET /dogs
   # GET /dogs.json
   def index
    @dogs = Dog.all
    
     end
-    
-  
+    def map_data
+       @dogs = Dog.all
+       render json: {dogs: @dogs}
+    end
 
 
 
   def search
      @dogs = Dog.order("date DESC")
+     if params["lostFound"]=="true" 
+      @dogs=@dogs.where(lostFound: true) 
+    elsif params["lostFound"]=="false" 
+      @dogs=@dogs.where(lostFound: false) 
+    end
      #AQUI  SE FILTRA RAZA
     if params[:raza].present?
       @dogs = @dogs.where("raza ILIKE ?", "%#{params[:raza]}%")
@@ -23,11 +32,14 @@ class DogsController < ApplicationController
       @dogs = @dogs.where("gender ILIKE ?", "%#{params[:gender]}%")
     end 
     #Aquí busca por fecha 
-    #if params[:date].present?
-    #  @dogs = @dogs.where("date ILIKE ?", "%#{params[:date]}%")
-    #end
+    if params[:date].present?
+     @dogs = @dogs.where("date ILIKE ?", "%#{params[:date]}%")
+    end
     render 'index'
   end 
+
+  
+  
 
   # GET /dogs/1
   # GET /dogs/1.json
@@ -91,6 +103,6 @@ class DogsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def dog_params
-      params.require(:dog).permit(:name, :gender, :raza_id, :latitude, :longitude, :dateFound, :dateLost, :characteristics, :collar, :reward, :photo, :user_found_id, :user_lost_id)
+      params.require(:dog).permit(:name, :gender, :raza_id, :latitude, :longitude, :date, :characteristics, :collar, :reward, :photo, :user_found_id, :user_lost_id, :calle, :numero, :colonia, :ciudad, :pais, :codigoPostal, :lostFound)
     end
 end
