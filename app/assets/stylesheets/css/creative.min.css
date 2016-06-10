@@ -12,23 +12,7 @@ html,body{height:100%;width:100%}body{font-family:Merriweather,'Helvetica Neue',
   padding: 15px;
   margin: 10px;
   -webkit-border-radius: 2px;
-  background: #f8f8f8;
-    color:#6A6A6A;
-}
-
-
-.busqueda{
-  -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
-   -webkit-border-radius: 2px;
-  border: 1px solid #AAA;
-   font-size: inherit;
-   overflow: hidden;
-   padding: 5px 10px;
-   text-overflow: ellipsis;
-   white-space: nowrap;
-   background-color: #6A6A6E;
-   color: white;
-   width: 172px;
+    text-align: center;
 }
 
 .central{
@@ -47,4 +31,23 @@ html,body{height:100%;width:100%}body{font-family:Merriweather,'Helvetica Neue',
   width: 350px;
   float: left;
   margin: 10px;
+}
+
+.formaselect{
+  background-image: url(http://i62.tinypic.com/15xvbd5.png), -webkit-linear-gradient(#FAFAFA, #F4F4F4 40%, #E5E5E5);
+  padding: 0px;
+}
+
+.resize{
+  width:170px;
+}
+
+.textradio{
+  font-size: 12px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.tt{
+  height: 300px;
 }

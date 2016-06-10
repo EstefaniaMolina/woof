@@ -18,28 +18,49 @@ class DogsController < ApplicationController
 
   def search
      @dogs = Dog.order("date DESC")
+     @lostFound = params["lostFound"]
      if params["lostFound"]=="true" 
       @dogs=@dogs.where(lostFound: true) 
     elsif params["lostFound"]=="false" 
       @dogs=@dogs.where(lostFound: false) 
     end
      #AQUI  SE FILTRA RAZA
-    if params[:raza].present?
-      @dogs = @dogs.where("raza ILIKE ?", "%#{params[:raza]}%")
-    end
-     #AQUI BUSCA GENERO 
-    if params[:gender].present?
-      @dogs = @dogs.where("gender ILIKE ?", "%#{params[:gender]}%")
-    end 
-    #Aquí busca por fecha 
-    if params[:date].present?
-     @dogs = @dogs.where("date ILIKE ?", "%#{params[:date]}%")
+    if params[:date].present? & params[:raza_id].present? & params[:gender].present? & params[:ciudad].present?
+         @dogs = Dog.where(date: params[:date],raza_id: params[:raza_id], gender: params[:gender]).where("unaccent(ciudad) ILIKE ?", "%#{params[:ciudad].mb_chars.normalize(:kd).downcase.to_s}%")
+    elsif params[:date].present? & params[:raza_id].present? & params[:gender].present?
+         @dogs = Dog.where(date: params[:date],raza_id: params[:raza_id], gender: params[:gender])
+    elsif params[:date].present? & params[:raza_id].present? & params[:ciudad].present?
+         @dogs = Dog.where(date: params[:date],raza_id: params[:raza_id]).where("unaccent(ciudad) ILIKE ?", "%#{params[:ciudad].mb_chars.normalize(:kd).downcase.to_s}%")
+    elsif params[:gender].present? & params[:raza_id].present? & params[:ciudad].present?
+         @dogs = Dog.where(gender: params[:gender],raza_id: params[:raza_id]).where("unaccent(ciudad) ILIKE ?", "%#{params[:ciudad].mb_chars.normalize(:kd).downcase.to_s}%")
+    elsif params[:gender].present? & params[:date].present? & params[:ciudad].present?
+         @dogs = Dog.where(gender: params[:gender],date: params[:date]).where("unaccent(ciudad) ILIKE ?", "%#{params[:ciudad].mb_chars.normalize(:kd).downcase.to_s}%")
+    elsif params[:date].present? & params[:raza_id].present?
+         @dogs = Dog.where(date: params[:date],raza_id: params[:raza_id])
+    elsif params[:date].present? & params[:gender].present?
+         @dogs = Dog.where(date: params[:date],gender: params[:gender])
+    elsif params[:date].present? & params[:ciudad].present?
+         @dogs = Dog.where(date: params[:date]).where("unaccent(ciudad) ILIKE ?", "%#{params[:ciudad].mb_chars.normalize(:kd).downcase.to_s}%")
+    elsif params[:raza_id].present? & params[:gender].present?
+          @dogs = Dog.where(raza_id: params[:raza_id], gender: params[:gender])
+    elsif params[:raza_id].present? & params[:ciudad].present?
+          @dogs = Dog.where(raza_id: params[:raza_id]).where("unaccent(ciudad) ILIKE ?", "%#{params[:ciudad].mb_chars.normalize(:kd).downcase.to_s}%")
+    elsif params[:gender].present? & params[:ciudad].present?
+          @dogs = Dog.where(gender: params[:gender]).where("unaccent(ciudad) ILIKE ?", "%#{params[:ciudad].mb_chars.normalize(:kd).downcase.to_s}%")
+    elsif params[:date].present?
+         @dogs = Dog.where(date: params[:date])   
+    elsif params[:raza_id].present? 
+      @dogs = @dogs.where(raza_id: params[:raza_id])
+    elsif params[:gender].present?
+      @dogs = @dogs.where(gender: params[:gender])
+    elsif params[:ciudad].present?
+      @dogs = @dogs.where("unaccent(ciudad) ILIKE ?", "%#{params[:ciudad].mb_chars.normalize(:kd).downcase.to_s}%")
+      #@dogs = @dogs.where(ciudad: params[:ciudad])
     end
     render 'index'
   end 
 
-  
-  
+
 
   # GET /dogs/1
   # GET /dogs/1.json
@@ -59,10 +80,15 @@ class DogsController < ApplicationController
   # POST /dogs.json
   def create
     @dog = Dog.new(dog_params)
-
+    @dog.user_found_id = current_user.id
     respond_to do |format|
-      if @dog.save
-        format.html { redirect_to root_path, notice: 'Dog was successfully created.' }
+      if @dog.save 
+        if @dog.lostFound == true
+          format.html {redirect_to "/dogs/search?lostFound=true", notice: 'Dog was successfully created.' }
+        else
+          format.html {redirect_to "/dogs/search?lostFound=false", notice: 'Dog was successfully created.' }
+        end
+        #format.html { redirect_to root_path, notice: 'Dog was successfully created.' }
         format.json { render :show, status: :created, location: @dog }
       else
         format.html { render :new }

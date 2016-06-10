@@ -6,58 +6,86 @@
 <body style="height:100%;margin:0px;">
 
   <div class="jumbotron" style="position:relative; box-sizing:border-box; margin:0px; padding-top: 80px; background-color:#1BB5B0; color: white; height:250px">
-      <h1 style = "text-align:center;">HEADER <img src="/assets/huella.png" width="100px" style="padding: 0px;"></h1>
+    <%if current_page?("/dogs/search?lostFound=true") %>
+      <h1 style = "text-align:center;">Perros que buscan a su dueño <img src="/assets/home.png" width="100px" style="padding: 0px;"></h1>
+    <%else%>
+    <h1 style = "text-align:center;">Dueños que buscan a su perro  <img src="/assets/huella.png" width="100px" style="padding: 0px;"></h1>
+    <%end%>
   </div>
 
- <div class="panel-body" style="padding:0px;width:25%; height:100%; float:left;">
-    <div class="filtro">
-      <h3 style="text-align:center;margin-top:10px;" >Filtra tu busqueda</h3>
-      <%= form_tag("/dogs/search", method: "post") do %> <!-- cambiar por "post"--> 
-       <div class="field">
-            <%=label_tag :raza_id %><br>
-            <%= select_tag :raza_id, options_for_select(Raza.all.collect { |s| [s.name, s.id] }),include_blank: true%>
-        </div> 
-        <div class="field">
-            <%=label_tag :Género %><br>
-            <%=select_tag :gender, options_for_select([['Macho', 'Macho'], ['Hembra', 'Hembra']]),include_blank: true %>
-        </div>
-        
-        <div class="field">
-          <%= label_tag(:q, "Fecha:") %> <br>
-          <%=text_field_tag 'Fecha', nil, class: 'date-field',readonly:"readonly"%>
-        </div> 
-        <%= submit_tag("Search", :class=>"busqueda")%> 
-      <%end%> 
-      <div id="map" style="width: 300px; height: 300px; border:1px solid salmon" ></div>
-      </div>
 
+
+  <div class="panel-body" style="padding:0px;width:25%; height:100%; float:left; display:inline; ">
+
+    <div class="filtro panel panel-default" >
+            <%= form_tag("/dogs/search", method: "post") do %> <!-- cambiar por "post"--> 
+            <%= hidden_field_tag :lostFound, @lostFound%>
+                <h3 class="textofiltro" style="text-align:center; font-size:20px; margin-bottom:30px;" >Filtra Tu <b>Búsqueda</b></h3>
+                <div class="form-group">                    
+                    <div class="col-sm-12" style="margin-bottom:15px; margin-top:15px;">
+                        <%= select_tag :raza_id, options_for_select(Raza.all.collect { |s| [s.name, s.id] }), :include_blank=> "Raza", class: "form-control"%>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12" style="margin-bottom:15px;">
+                        <%=select_tag :gender, options_for_select([['Macho', 'Macho'], ['Hembra', 'Hembra']]), :include_blank=> "Género", class: "form-control"%>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12" style="margin-bottom:15px;">
+                      
+                        <%=text_field_tag :date , nil, class: 'date-field form-control', readonly:"readonly", 
+                        placeholder: "Fecha"%>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12" style="margin-bottom:15px;">
+                        <%=text_field_tag :ciudad,nil, class: 'form-control', placeholder:"Ciudad" %>
+                    </div>
+                </div>
+                
+                 <div class="form-group">
+                    <div class="col-sm-12" style="margin-bottom:20px; margin-top:5px;">
+                        <%= submit_tag("Ver Resultados", :class=>"btn btn-info btn-block")%> 
+                    </div>
+                </div>
+
+                <div id="map" style="width: 250px; height: 250px; border:1px solid #AAA; margin-top:10px; margin-left:auto; margin-right:auto"  ></div>
+                </div>       
+              <%end%>
+        
    </div>
 
-<div class="panel-body" style="padding:0px;width:75%; float:left;">
-  <!--<p id="notice"><%= notice %></p>-->
-       <div >
-      <% @dogs.each do |dog| %>       
-        <div class="col-md-4">
+  <div class="panel-body" style="padding:0px;width:75%; float:left;">
+  
+      <% @dogs.each do |dog| %> 
+      
+        <div class="col-md-4 dog">
           <%= link_to dog, :class=>"portfolio-box" do%>
           <%= image_tag dog.photo, :class=>"img-responsive"%>
           <div class="portfolio-box-caption">
                             <div class="portfolio-box-caption-content">
                                 <div class="project-category text-faded">
-                                    <%= label_tag dog.gender%>
+                                    <%= label_tag dog.gender, nil, class: 'dog-gender'%>
                                 </div>
                                 <div class="project-name">                                    
-                                    <%= label_tag dog.raza.name%>
-                                </div>
-                                <!--%= link_to 'Destroy', dog, method: :delete, data: { confirm: 'Are you sure?' } %>-->
+                                    <%= label_tag dog.raza.name, nil, class: 'dog-raza'%>
+                                </div> <!--<%= link_to 'Destroy', dog, method: :delete, data: { confirm: 'Are you sure?' } %>-->
+
                             </div>
-                        </div>                                
+                        </div> 
+                        <%= hidden_field_tag :calle, dog.calle, class: 'dog-calle'%>
+                        <%= hidden_field_tag :numero, dog.numero, class: 'dog-numero'%>
+                        <%= hidden_field_tag :colonia, dog.colonia, class: 'dog-colonia'%>
+                        <%= hidden_field_tag :latitude, dog.latitude, class: 'dog-lat'%>
+                        <%= hidden_field_tag :longitude, dog.longitude, class: 'dog-lgt'%>
+                        <%= hidden_field_tag :id, dog.id, class: 'dog-id'%>
           <% end %>          
         </div>
     <% end %>
-    </div>
+    <div>
+<br>
 
-    </div>
-
-
+  </div>
 </body>
 </html>
